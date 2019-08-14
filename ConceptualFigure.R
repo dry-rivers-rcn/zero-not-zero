@@ -13,7 +13,6 @@ library(tidyverse)
 Milner<- read.csv("MilnerID_Data.csv", header = TRUE, stringsAsFactors =FALSE) #13087505 Milner Lwr Pwr Plant at Milner
 Milner[,1]<-as.Date(Milner[,1], "%m/%d/%y %H:%M")
 
-
 frozen<-"15896000" # Kuparuk R, Deadhorse, AK; alt SF Grand River near Cash, SD  06356500
 FrozStart<- as.Date("2018-10-01") #"2017-09-01"
 FrozEnd <- as.Date("2109-06-01") #"2018-07-01
@@ -42,9 +41,6 @@ AnthroUpstreamLossGW<- ""  # Arkansas River near Dodge City - need the correct U
 AUpStart<-as.Date("") #2000-10-01 ?? 
 AUpEnd<-as.Date("") #2001-10-01
 
-AnthroUpstreamLossSW<- ""  # Milner stretch on the Snake
-AswUpStart<-as.Date("") #
-AswUpEnd<-as.Date("") #
 
 Bypass<- "" #bypass through karst Palanisamy and Workman 2015 - need data or gage number
 BypassStart<-as.Date("")
