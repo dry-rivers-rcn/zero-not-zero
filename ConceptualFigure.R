@@ -7,12 +7,12 @@ library(dataRetrieval)
 library(tidyverse)
 pCode <- "00060"
 
-#set working directory to source folder - not sure how to automate this
+#if loading in data, need to set working directory to source folder - not sure how to automate this
 
 # -------- Load non- USGS data --------
-#Anthro Upstream Surface water loss
-Milner<- read.csv("MilnerID_Data.csv", header = TRUE, stringsAsFactors =FALSE) #13087505 Milner Lwr Pwr Plant at Milner
-Milner[,1]<-as.Date(Milner[,1], "%m/%d/%y %H:%M")
+#Anthro Upstream Surface water loss from diverting around a dam - might not need this
+#Milner<- read.csv("MilnerID_Data.csv", header = TRUE, stringsAsFactors =FALSE) #13087505 Milner Lwr Pwr Plant at Milner
+#Milner[,1]<-as.Date(Milner[,1], "%m/%d/%y %H:%M")
 
 #----- Frozen gauge location -------------------------
 Frozen<-"15896000" # Kuparuk R, Deadhorse, AK; alt SF Grand River near Cash, SD  06356500
@@ -29,9 +29,9 @@ ReverseEnd<-as.Date("2019-04-01")
 FlowReverseQ <- readNWISuv(siteNumbers = FlowReverse, parameterCd = pCode, startDate = ReverseStart, endDate = ReverseEnd) %>% renameNWISColumns() %>% data.frame
 
 #----- Data/equipment error ---------------------------
-DataError<- "" #bypass through karst Palanisamy and Workman 2015 - need data or gage number
-DataErrorStart<-as.Date("")
-DataErrorEnd<-as.Date("")
+DataError<- "01646500" #potomac river near wash DC
+DataErrorStart<-as.Date("2019-06-24")
+DataErrorEnd<-as.Date("2019-07-02")
 
 #-----Naturally occuring isolated pools --------------
 IsolatedPool<- "09512500" #Agua Fria River nr Mayer, AZ
@@ -50,10 +50,11 @@ UpstreamLoss<- "06879650" #kings Creek nr Manhattan, KS
 UpStart<-as.Date("") #"2018-12-01 - when you zoom in it's actually at 1 cfs - better time-frame?
 UpEnd<-as.Date("") #"2018-07-01
 
-#----- Groundwater Pumping Removes flow -------
-AnthroGW<- "07139500"  # Arkansas River near Dodge City - need the correct USGS gauge number
-AgwStart<-as.Date("2000-10-01") #2000-10-01 ?? 
-AgwEnd<-as.Date("2001-10-01") #2001-10-01
+#-------
+#------ Groundwater Pumping Removes flow 
+AnthroGW<- "07139000"  # Arkansas River at Garden City 
+AgwStart<-as.Date("2019-05-01") 
+AgwEnd<-as.Date("2019-09-15") 
 
 AnthroGWQ <- readNWISuv(siteNumbers = AnthroGW, parameterCd = pCode, startDate = AgwStart, endDate = AgwEnd) %>% renameNWISColumns() %>% data.frame
 
@@ -68,23 +69,34 @@ AnthroConveyanceAQ <- readNWISuv(siteNumbers = AnthroConveyanceA, parameterCd = 
 AnthroConveyanceBQ <- readNWISuv(siteNumbers = AnthroConveyanceB, parameterCd = pCode, startDate = AConvStart, endDate = AConvEnd) %>% renameNWISColumns() %>% data.frame
 
 
+#-----------Plotting----------------------------
 
+plot(FrozenQ$dateTime, FrozenQ$Flow_Inst, type="l", 
+     col="blue", xlab="Date", ylab="Discharge (cfs)")
+axis.POSIXct(1, FrozenQ$dateTime, format="%b")
+axis.POSIXct(1, FrozenQ$dateTime, format="%Y", padj=1.8)
 
-sites<-c('Frozen', 'FlowReverse', 'IsolatedPool', 'AnthroGW', 'AnthroConveyance')
+plot(FlowReverseQ$dateTime, FlowReverseQ$Flow_Inst, type="l", 
+     col="blue", xlab="Date", ylab="Discharge (cfs)")
+axis.POSIXct(1, FlowReverseQ$dateTime, format="%b")
+axis.POSIXct(1, FlowReverseQ$dateTime, format="%Y", padj=1.8)
 
+plot(IsolatedPoolQ$dateTime, IsolatedPoolQ$Flow_Inst, type="l", 
+     col="blue", xlab="Date", ylab="Discharge (cfs)")
+axis.POSIXct(1, IsolatedPoolQ$dateTime, format="%b")
+axis.POSIXct(1, IsolatedPoolQ$dateTime, format="%Y", padj=1.8)
 
+plot(AnthroGWQ$dateTime, AnthroGWQ$Flow_Inst, type="l", 
+     col="blue", xlab="Date", ylab="Discharge (cfs)")
+axis.POSIXct(1, AnthroGWQ$dateTime, format="%b")
+axis.POSIXct(1, AnthroGWQ$dateTime, format="%Y", padj=1.8)
 
+plot(AnthroConveyanceAQ$dateTime, AnthroConveyanceAQ$Flow_Inst, type="l", 
+     col="blue", xlab="Date", ylab="Discharge (cfs)")
+axis.POSIXct(1, AnthroConveyanceAQ$dateTime, format="%b")
+axis.POSIXct(1, AnthroConveyanceAQ$dateTime, format="%Y", padj=1.8)
 
-
-
-
-
-
-
-plot(date , Q_cms, type="n",
-     main = paste("Site", site_num),
-     xlab = "",
-     ylab = "Discharge (cfs)",
-     xaxt="n")
-axis.POSIXct(1, date, format="%b")
-axis.POSIXct(1, date, format="%Y", padj=1.8)
+plot(AnthroConveyanceBQ$dateTime, AnthroConveyanceBQ$Flow_Inst, type="l", 
+     col="blue", xlab="Date", ylab="Discharge (cfs)")
+axis.POSIXct(1, AnthroConveyanceBQ$dateTime, format="%b")
+axis.POSIXct(1, AnthroConveyanceBQ$dateTime, format="%Y", padj=1.8)
