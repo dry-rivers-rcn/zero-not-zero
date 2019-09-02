@@ -6,6 +6,7 @@
 library(dataRetrieval)
 library(tidyverse)
 pCode <- "00060"
+setwd("~/Documents/GitRepos/zero-not-zero/Figures")
 
 #if loading in data, need to set working directory to source folder - not sure how to automate this
 
@@ -72,44 +73,55 @@ AnthroConveyanceBQ <- readNWISuv(siteNumbers = AnthroConveyanceB, parameterCd = 
 
 
 #-----------Plotting----------------------------
-
-plot(FrozenQ$dateTime, FrozenQ$Flow_Inst, main = "Frozen Gauge: Kuparuk River, Deadhorse, AK ", type="l", col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+pdf("Frozen.pdf", width = 3.5, height =4 )
+plot(FrozenQ$dateTime, FrozenQ$Flow_Inst, main = "Frozen Gauge: Kuparuk River, Deadhorse, AK ", type="l", col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2, cex.main=0.75)
 lines(FrozenQ$dateTime[FrozenQ$Flow_Inst <= 0.001], FrozenQ$Flow_Inst[FrozenQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 axis.POSIXct(1, FrozenQ$dateTime, format="%b")
 axis.POSIXct(1, FrozenQ$dateTime, format="%Y", padj=1.8)
+dev.off()
 
+pdf("FlowReverse.pdf", width = 3.5, height =4 )
 plot(FlowReverseQ$dateTime, FlowReverseQ$Flow_Inst, type="l", main="Flow Reversal: Milwaukee River, WI",
-     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=1)
+     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=1, cex.main=0.75)
 lines(FlowReverseQ$dateTime[FlowReverseQ$Flow_Inst <= 0.001], FlowReverseQ$Flow_Inst[FlowReverseQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=1)
 axis.POSIXct(1, FlowReverseQ$dateTime, format="%b")
 axis.POSIXct(1, FlowReverseQ$dateTime, format="%Y", padj=1.8)
+dev.off()
 
-
-plot(DataErrorQ$dateTime, DataErrorQ$Flow_Inst, type="l", main="Equipment Error: Potomac River,           Washington, DC", col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+pdf("DataError.pdf", width = 3.5, height =4 )
+plot(DataErrorQ$dateTime, DataErrorQ$Flow_Inst, type="l", main="Equipment Error: Potomac River,           Washington, DC", col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2, cex.main=0.75)
 lines(DataErrorQ$dateTime[DataErrorQ$Flow_Inst <= 0.001], DataErrorQ$Flow_Inst[DataErrorQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 axis.POSIXct(1, DataErrorQ$dateTime, format="%b")
 axis.POSIXct(1, DataErrorQ$dateTime, format="%Y", padj=1.8)
+dev.off()
 
-
+pdf("UpstreamLoss.pdf", width = 3.5, height =4 )
 plot(IsoQ$dateTime, IsoQ$Flow_Inst, type="l", main="Upstream Flow Loss: Agua Fria River, Mayer, AZ",
-     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2, cex.main=0.75)
 lines(IsoQ$dateTime[IsoQ$Flow_Inst <= 0.001], IsoQ$Flow_Inst[IsoQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 axis.POSIXct(1, IsoQ$dateTime, format="%b")
 axis.POSIXct(1, IsoQ$dateTime, format="%Y", padj=1.8)
+dev.off()
 
+pdf("AnthroGW.pdf", width = 3.5, height =4 )
 plot(AnthroGWQ$dateTime, AnthroGWQ$Flow_Inst, type="l", main="Groundwater Pumping: Arkansas River, Garden City, AK" ,
-     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2, cex.main=0.75)
 lines(AnthroGWQ$dateTime[AnthroGWQ$Flow_Inst <= 0.001], AnthroGWQ$Flow_Inst[AnthroGWQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 axis.POSIXct(1, AnthroGWQ$dateTime, format="%b")
 axis.POSIXct(1, AnthroGWQ$dateTime, format="%Y", padj=1.8)
+dev.off()
 
+pdf("AnthroBypass.pdf", width = 3.5, height =4 )
 plot(AnthroConveyanceAQ$dateTime, AnthroConveyanceAQ$Flow_Inst, type="l", main= "Gauge Bypass, Rio Grande Floodway",
-     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2, cex.main=0.75)
 lines(AnthroConveyanceAQ$dateTime[AnthroConveyanceAQ$Flow_Inst <= 0.001], AnthroConveyanceAQ$Flow_Inst[AnthroConveyanceAQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 axis.POSIXct(1, AnthroConveyanceAQ$dateTime, format="%b")
 axis.POSIXct(1, AnthroConveyanceAQ$dateTime, format="%Y", padj=1.8)
+dev.off()
 
+pdf("AnthroBypassChan.pdf", width = 3.5, height =4 )
 plot(AnthroConveyanceBQ$dateTime, AnthroConveyanceBQ$Flow_Inst, type="l", 
      col="blue", xlab="Date", ylab="Discharge (cfs)")
 axis.POSIXct(1, AnthroConveyanceBQ$dateTime, format="%b")
 axis.POSIXct(1, AnthroConveyanceBQ$dateTime, format="%Y", padj=1.8)
+dev.off()
