@@ -23,8 +23,8 @@ FrozenQ <- readNWISuv(siteNumbers = Frozen, parameterCd = pCode, startDate = Fro
 
 #----- Flow Reversal ---------------------------------
 FlowReverse<- "04087170" #Milwaukee
-ReverseStart<-as.Date("2018-12-15")
-ReverseEnd<-as.Date("2019-04-01")
+ReverseStart<-as.Date("2019-01-15")
+ReverseEnd<-as.Date("2019-03-15")
 
 FlowReverseQ <- readNWISuv(siteNumbers = FlowReverse, parameterCd = pCode, startDate = ReverseStart, endDate = ReverseEnd) %>% renameNWISColumns() %>% data.frame
 
@@ -33,12 +33,14 @@ DataError<- "01646500" #potomac river near wash DC
 DataErrorStart<-as.Date("2019-06-24")
 DataErrorEnd<-as.Date("2019-07-02")
 
+DataErrorQ <- readNWISuv(siteNumbers = DataError, parameterCd = pCode, startDate = DataErrorStart, endDate = DataErrorEnd) %>% renameNWISColumns() %>% data.frame
+
 #-----Naturally occuring isolated pools --------------
 IsolatedPool<- "09512500" #Agua Fria River nr Mayer, AZ
 IsoStart<-as.Date("2019-06-01") 
 IsoEnd<-as.Date("2019-08-01") 
 
-IsoQ <- readNWISuv(siteNumbers = FlowReverse, parameterCd = pCode, startDate = IsoStart, endDate = IsoEnd) %>% renameNWISColumns() %>% data.frame
+IsoQ <- readNWISuv(siteNumbers = IsolatedPool, parameterCd = pCode, startDate = IsoStart, endDate = IsoEnd) %>% renameNWISColumns() %>% data.frame
 
 # ----- Karst Bypass around gauge ------------
 Bypass<- "" #bypass through karst Palanisamy and Workman 2015 - need data or gage number
@@ -54,7 +56,7 @@ UpEnd<-as.Date("") #"2018-07-01
 #------ Groundwater Pumping Removes flow 
 AnthroGW<- "07139000"  # Arkansas River at Garden City 
 AgwStart<-as.Date("2019-05-01") 
-AgwEnd<-as.Date("2019-09-15") 
+AgwEnd<-as.Date("2019-07-15") 
 
 AnthroGWQ <- readNWISuv(siteNumbers = AnthroGW, parameterCd = pCode, startDate = AgwStart, endDate = AgwEnd) %>% renameNWISColumns() %>% data.frame
 
@@ -71,28 +73,39 @@ AnthroConveyanceBQ <- readNWISuv(siteNumbers = AnthroConveyanceB, parameterCd = 
 
 #-----------Plotting----------------------------
 
-plot(FrozenQ$dateTime, FrozenQ$Flow_Inst, type="l", 
-     col="blue", xlab="Date", ylab="Discharge (cfs)")
+plot(FrozenQ$dateTime, FrozenQ$Flow_Inst, main = "Frozen Gauge: Kuparuk River, Deadhorse, AK ", type="l", col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+lines(FrozenQ$dateTime[FrozenQ$Flow_Inst <= 0.001], FrozenQ$Flow_Inst[FrozenQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 axis.POSIXct(1, FrozenQ$dateTime, format="%b")
 axis.POSIXct(1, FrozenQ$dateTime, format="%Y", padj=1.8)
 
-plot(FlowReverseQ$dateTime, FlowReverseQ$Flow_Inst, type="l", 
-     col="blue", xlab="Date", ylab="Discharge (cfs)")
+plot(FlowReverseQ$dateTime, FlowReverseQ$Flow_Inst, type="l", main="Flow Reversal: Milwaukee River, WI",
+     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=1)
+lines(FlowReverseQ$dateTime[FlowReverseQ$Flow_Inst <= 0.001], FlowReverseQ$Flow_Inst[FlowReverseQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=1)
 axis.POSIXct(1, FlowReverseQ$dateTime, format="%b")
 axis.POSIXct(1, FlowReverseQ$dateTime, format="%Y", padj=1.8)
 
-plot(IsolatedPoolQ$dateTime, IsolatedPoolQ$Flow_Inst, type="l", 
-     col="blue", xlab="Date", ylab="Discharge (cfs)")
-axis.POSIXct(1, IsolatedPoolQ$dateTime, format="%b")
-axis.POSIXct(1, IsolatedPoolQ$dateTime, format="%Y", padj=1.8)
 
-plot(AnthroGWQ$dateTime, AnthroGWQ$Flow_Inst, type="l", 
-     col="blue", xlab="Date", ylab="Discharge (cfs)")
+plot(DataErrorQ$dateTime, DataErrorQ$Flow_Inst, type="l", main="Equipment Error: Potomac River,           Washington, DC", col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+lines(DataErrorQ$dateTime[DataErrorQ$Flow_Inst <= 0.001], DataErrorQ$Flow_Inst[DataErrorQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
+axis.POSIXct(1, DataErrorQ$dateTime, format="%b")
+axis.POSIXct(1, DataErrorQ$dateTime, format="%Y", padj=1.8)
+
+
+plot(IsoQ$dateTime, IsoQ$Flow_Inst, type="l", main="Upstream Flow Loss: Agua Fria River, Mayer, AZ",
+     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+lines(IsoQ$dateTime[IsoQ$Flow_Inst <= 0.001], IsoQ$Flow_Inst[IsoQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
+axis.POSIXct(1, IsoQ$dateTime, format="%b")
+axis.POSIXct(1, IsoQ$dateTime, format="%Y", padj=1.8)
+
+plot(AnthroGWQ$dateTime, AnthroGWQ$Flow_Inst, type="l", main="Groundwater Pumping: Arkansas River, Garden City, AK" ,
+     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+lines(AnthroGWQ$dateTime[AnthroGWQ$Flow_Inst <= 0.001], AnthroGWQ$Flow_Inst[AnthroGWQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 axis.POSIXct(1, AnthroGWQ$dateTime, format="%b")
 axis.POSIXct(1, AnthroGWQ$dateTime, format="%Y", padj=1.8)
 
-plot(AnthroConveyanceAQ$dateTime, AnthroConveyanceAQ$Flow_Inst, type="l", 
-     col="blue", xlab="Date", ylab="Discharge (cfs)")
+plot(AnthroConveyanceAQ$dateTime, AnthroConveyanceAQ$Flow_Inst, type="l", main= "Gauge Bypass, Rio Grande Floodway",
+     col="blue", xlab="Date", ylab="Discharge (cfs)", lwd=2)
+lines(AnthroConveyanceAQ$dateTime[AnthroConveyanceAQ$Flow_Inst <= 0.001], AnthroConveyanceAQ$Flow_Inst[AnthroConveyanceAQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 axis.POSIXct(1, AnthroConveyanceAQ$dateTime, format="%b")
 axis.POSIXct(1, AnthroConveyanceAQ$dateTime, format="%Y", padj=1.8)
 
