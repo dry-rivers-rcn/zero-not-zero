@@ -1,6 +1,7 @@
 #------------------------------------------------------------------
 # Download and plot USGS data for zero-not-zero conceptual figure
 # Kendra Kaiser August 14th, 2019
+#kendra rocks
 #------------------------------------------------------------------
 
 library(dataRetrieval)
