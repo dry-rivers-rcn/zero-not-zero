@@ -1,6 +1,6 @@
 #------------------------------------------------------------------
 # Download and plot USGS data for zero-not-zero conceptual figure
-# Kendra Kaiser August 14th, 2019
+# Kendra Kaiser August 14th, 2019; George H. Allen
 #kendra rocks
 #------------------------------------------------------------------
 # install.packages("dataRetrieval")
