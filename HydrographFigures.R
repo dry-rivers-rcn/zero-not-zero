@@ -46,7 +46,7 @@ FlowReverseQ$X_00060_00003 = FlowReverseQ$X_00060_00003*0.028316847
 # c Data/equipment error ---------------------------
 DataError = "01646500" #potomac river near wash DC
 DataErrorStart = as.Date("2019-06-24")
-DataErrorEnd = as.Date("2019-08-02")
+DataErrorEnd = as.Date("2019-09-02")
 
 DataErrorQ = readNWISuv(siteNumbers = DataError, parameterCd = pCode, 
                         startDate = DataErrorStart, endDate = DataErrorEnd
@@ -54,7 +54,18 @@ DataErrorQ = readNWISuv(siteNumbers = DataError, parameterCd = pCode,
 DataErrorQ$Flow_Inst = DataErrorQ$Flow_Inst*0.028316847
 
 
-# d Anthro Groundwater Pumping Removes flow 
+# d Anthro Upstream Surface water loss from diverting around a dam - might not need this --------
+# Load non- USGS data --------
+MilnerStart = as.Date("2014-10-01") 
+MilnerEnd = as.Date("2015-09-30") 
+
+Milner = read.csv("MilnerID_Data.csv", header=T, stringsAsFactors=F) #13087505 Milner Lwr Pwr Plant at Milner
+Milner[,1] = as.Date(Milner[,1], "%m/%d/%y %H:%M")
+Milner = Milner[Milner$Timestamp..UTC.07.00. > MilnerStart & Milner$Timestamp..UTC.07.00. < MilnerEnd, ]
+names(Milner)[2] = "Q_cms"
+Milner$Q_cms = Milner$Q_cms*0.028316847
+
+# e Anthro Groundwater Pumping Removes flow 
 AnthroGW = "07139000"  # Arkansas River at Garden City 
 AgwStart = as.Date("2018-05-01") 
 AgwEnd = as.Date("2018-07-15") 
@@ -65,16 +76,7 @@ AnthroGWQ = readNWISdv(siteNumbers = AnthroGW, parameterCd = pCode,
 AnthroGWQ$X_00060_00003 = AnthroGWQ$X_00060_00003*0.028316847
 
 
-# e Anthro Upstream Surface water loss from diverting around a dam - might not need this --------
-# Load non- USGS data --------
-MilnerStart = as.Date("2014-10-01") 
-MilnerEnd = as.Date("2015-09-30") 
 
-Milner = read.csv("MilnerID_Data.csv", header=T, stringsAsFactors=F) #13087505 Milner Lwr Pwr Plant at Milner
-Milner[,1] = as.Date(Milner[,1], "%m/%d/%y %H:%M")
-Milner = Milner[Milner$Timestamp..UTC.07.00. > MilnerStart & Milner$Timestamp..UTC.07.00. < MilnerEnd, ]
-names(Milner)[2] = "Q_cms"
-Milner$Q_cms = Milner$Q_cms*0.028316847
 
 
 
@@ -132,7 +134,7 @@ Milner$Q_cms = Milner$Q_cms*0.028316847
 
 # set up plot:
 pdfOutPath = "Figure3.pdf"
-pdf(pdfOutPath, width=4, height = 8)
+pdf(pdfOutPath, width=4, height = 9)
 
 layout(matrix(1:5, nrow=5, byrow=T), heights=c(3,3,3,3,3.5))
 par(mar=c(3,4,2,1))
@@ -148,22 +150,25 @@ plot(D, Q/1e4, type="l",
      las=1, lwd=1.5,col="blue")
 abline(h=0, lty=1, col=rgb(1,1,1,0.8))
 abline(h=0, lty=2)
-mtext(expression(10^4), adj=0, outer=F, cex=0.65)
 axis.POSIXct(1, D, format="%Y", padj=1.8)
-legend("topleft", "a. Ice impacted", border=F, bty="n", text.font=2)
+legend("topleft", "2.1 Frozen surface water", border=F, bty="n", text.font=2)
+mtext("(a)", padj=-2, adj=0, outer=F, cex=0.65, font=2)
+mtext(expression(10^4), adj=0, outer=F, cex=0.65)
 
 # b Flow Reversal ---------------------------------
 D = as.POSIXlt(FlowReverseQ$Date)
 Q = FlowReverseQ$X_00060_00003
 plot(D, Q, type="l", 
-     ylim=c(0, 1.5),
+     ylim=c(min(Q), 1.5),
      xlab="", ylab="Q (cms)", 
      las=1, lwd=1.5, col="blue")
 abline(h=0, lty=1, col=rgb(1,1,1,0.8))
 abline(h=0, lty=2)
-mtext(expression(10^0), adj=0, outer=F, cex=0.65)
 axis.POSIXct(1, D, format="%Y", padj=1.8)
-legend("topleft", "b. Flow reversal", border=F, bty="n", text.font=2)
+legend("topleft", "2.2 Flow reversal", border=F, bty="n", text.font=2)
+mtext("(b)", padj=-2, adj=0, outer=F, cex=0.65, font=2)
+mtext(expression(10^0), adj=0, outer=F, cex=0.65)
+
 
 # c Data/equipment error ---------------------------
 D = as.POSIXlt(DataErrorQ$dateTime)
@@ -174,35 +179,40 @@ plot(D, Q/10^3, type="l", main="",
      lwd=1.5, col="blue", las=1)
 abline(h=0, lty=1, col=rgb(1,1,1,0.8))
 abline(h=0, lty=2)
+axis.POSIXct(1, D, format="%Y", padj=1.8)
+legend("topleft", "2.3 Data/equipment error", border=F, bty="n", text.font=2)
+mtext("(c)", padj=-2, adj=0, outer=F, cex=0.65, font=2)
 mtext(expression(10^3), adj=0, outer=F, cex=0.65)
-#axis.POSIXct(1, D, format="%b", padj=0)
-axis.POSIXct(1, D, format="%Y", padj=1.8)
-legend("topleft", "c. Data/equipment error", border=F, bty="n", text.font=2)
 
-# d Anthro Groundwater Pumping Removes flow  ---------------------------
-D = as.POSIXlt(AnthroGWQ$Date)
-Q = AnthroGWQ$X_00060_00003
-plot(D, Q*1e2, type="l", main="" ,
-     xlab="", ylab="Q (cms)", 
-     col="blue", las=1, lwd=1.5)
-abline(h=0, lty=1, col=rgb(1,1,1,0.8))
-abline(h=0, lty=2)
-mtext(expression(10^1), adj=0, outer=F, cex=0.65)
-axis.POSIXct(1, D, format="%Y", padj=1.8)
-legend("topleft", "d. Pumping", border=F, bty="n", text.font=2)
-
-# e Anthro Upstream Surface water loss from diverting around a dam
-par(mar=c(5,4,2,1))
+# d Anthro Upstream Surface water loss from diverting around a dam
 D = as.POSIXlt(Milner$Timestamp..UTC.07.00.)
 Q = Milner$Q_cms
 plot(D, Q, type="l", main="" ,
-     xlab="Date", ylab="Q (cms)", 
+     ylim=c(min(Q), 120),
+     xlab="", ylab="Q (cms)", 
      las=1, lwd=1.5, col="blue")
 abline(h=0, lty=1, col=rgb(1,1,1,0.8))
 abline(h=0, lty=2)
-mtext(expression(10^0), adj=0, outer=F, cex=0.65)
 axis.POSIXct(1, D, format="%Y", padj=1.8)
-legend("topleft", "e. Diversion", border=F, bty="n", text.font=2)
+legend("topleft", "2.4b Surface water withdrawals", border=F, bty="n", text.font=2)
+mtext("(d)", padj=-2, adj=0, outer=F, cex=0.65, font=2)
+mtext(expression(10^0), adj=0, outer=F, cex=0.65)
+
+# e Anthro Groundwater Pumping Removes flow  ---------------------------
+par(mar=c(6,4,2,1))
+D = as.POSIXlt(AnthroGWQ$Date)
+Q = AnthroGWQ$X_00060_00003
+plot(D, Q*1e2, type="l", main="" ,
+     xlab="Date", ylab="Q (cms)", 
+     col="blue", las=1, lwd=1.5)
+abline(h=0, lty=1, col=rgb(1,1,1,0.8))
+abline(h=0, lty=2)
+axis.POSIXct(1, D, format="%Y", padj=1.8)
+legend("topleft", "2.4b Groundwater pumping", border=F, bty="n", text.font=2)
+mtext("(e)", padj=-2, adj=0, outer=F, cex=0.65, font=2)
+mtext(expression(10^1), adj=0, outer=F, cex=0.65)
+
+
 
 # Naturally occuring isolated pools --------------
 # plot(IsoQ$dateTime, IsoQ$Flow_Inst, type="l", main="",
