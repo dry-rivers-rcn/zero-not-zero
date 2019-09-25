@@ -17,37 +17,40 @@ pCode = "00060"
 setwd("~/research/2019_09_20_DryRivRCN_workshop/git/zero-not-zero/")
 
 
-
 #******************************************************************************
 # a Frozen gauge location -------------------------
 Frozen="15896000" # Kuparuk R, Deadhorse, AK; alt SF Grand River near Cash, SD  06356500
-FrozStart= as.Date("2017-10-01") #"2017-09-01"
-FrozEnd = as.Date("2018-06-01") #"2018-07-01
+FrozStart= as.Date("2017-8-01") #"2017-09-01"
+FrozEnd = as.Date("2018-7-31") #"2018-07-01
 
-FrozenQ = readNWISuv(siteNumbers = Frozen, parameterCd = pCode, 
-                      startDate = FrozStart, endDate = FrozEnd
-                      ) %>% renameNWISColumns() %>% data.frame
-
+FrozenQ = readNWISdv(siteNumbers = Frozen, parameterCd = pCode, 
+                     startDate = FrozStart, endDate = FrozEnd
+)# %>% renameNWISColumns() %>% data.frame
 
 # b Flow Reversal ---------------------------------
-FlowReverse= "02236125" 
-ReverseStart=as.Date("2014-01-15")
-ReverseEnd=as.Date("2014-02-15")
+# FlowReverse= "02236125"
+# ReverseStart=as.Date("2014-01-15")
+# ReverseEnd=as.Date("2014-02-15")
 
-FlowReverseQ = readNWISuv(siteNumbers = FlowReverse, parameterCd = pCode, 
-                           startDate = ReverseStart, endDate = ReverseEnd
-                           ) %>% renameNWISColumns() %>% data.frame
-FlowReverseQ$Flow_Inst = FlowReverseQ$Flow_Inst*0.028316847
+FlowReverse = "04194085"
+ReverseStart = as.Date("2012-05-01")
+ReverseEnd = as.Date("2012-06-30")
+
+
+FlowReverseQ = readNWISdv(siteNumbers = FlowReverse, parameterCd = pCode, 
+                          startDate = ReverseStart, endDate = ReverseEnd
+)# %>% renameNWISColumns() %>% data.frame
+FlowReverseQ$X_00060_00003 = FlowReverseQ$X_00060_00003*0.028316847
 
 
 # c Data/equipment error ---------------------------
-DataError= "01646500" #potomac river near wash DC
-DataErrorStart=as.Date("2018-06-24")
-DataErrorEnd=as.Date("2018-07-02")
+DataError = "01646500" #potomac river near wash DC
+DataErrorStart = as.Date("2019-06-24")
+DataErrorEnd = as.Date("2019-08-02")
 
 DataErrorQ = readNWISuv(siteNumbers = DataError, parameterCd = pCode, 
-                         startDate = DataErrorStart, endDate = DataErrorEnd
-                         ) %>% renameNWISColumns() %>% data.frame
+                        startDate = DataErrorStart, endDate = DataErrorEnd
+                        ) %>% renameNWISColumns() %>% data.frame
 DataErrorQ$Flow_Inst = DataErrorQ$Flow_Inst*0.028316847
 
 
@@ -56,16 +59,16 @@ AnthroGW = "07139000"  # Arkansas River at Garden City
 AgwStart = as.Date("2018-05-01") 
 AgwEnd = as.Date("2018-07-15") 
 
-AnthroGWQ = readNWISuv(siteNumbers = AnthroGW, parameterCd = pCode, 
-                        startDate = AgwStart, endDate = AgwEnd
-                        ) %>% renameNWISColumns() %>% data.frame
-AnthroGWQ$Flow_Inst = AnthroGWQ$Flow_Inst*0.028316847
+AnthroGWQ = readNWISdv(siteNumbers = AnthroGW, parameterCd = pCode, 
+                       startDate = AgwStart, endDate = AgwEnd
+)# %>% renameNWISColumns() %>% data.frame
+AnthroGWQ$X_00060_00003 = AnthroGWQ$X_00060_00003*0.028316847
 
 
 # e Anthro Upstream Surface water loss from diverting around a dam - might not need this --------
 # Load non- USGS data --------
 MilnerStart = as.Date("2014-10-01") 
-MilnerEnd = as.Date("2015-09-31") 
+MilnerEnd = as.Date("2015-09-30") 
 
 Milner = read.csv("MilnerID_Data.csv", header=T, stringsAsFactors=F) #13087505 Milner Lwr Pwr Plant at Milner
 Milner[,1] = as.Date(Milner[,1], "%m/%d/%y %H:%M")
@@ -81,12 +84,12 @@ Milner$Q_cms = Milner$Q_cms*0.028316847
 # AConvStart=as.Date("2005-08-01")
 # AConvEnd=as.Date("2005-11-01") 
 # 
-# AnthroConveyanceAQ = readNWISuv(siteNumbers = AnthroConveyanceA, parameterCd = pCode, 
+# AnthroConveyanceAQ = readNWISdv(siteNumbers = AnthroConveyanceA, parameterCd = pCode, 
 #                                  startDate = AConvStart, endDate = AConvEnd
 #                                  ) %>% renameNWISColumns() %>% data.frame
 # AnthroConveyanceAQ$Flow_Inst = AnthroConveyanceAQ$Flow_Inst*0.028316847
 # 
-# AnthroConveyanceBQ = readNWISuv(siteNumbers = AnthroConveyanceB, parameterCd = pCode, 
+# AnthroConveyanceBQ = readNWISdv(siteNumbers = AnthroConveyanceB, parameterCd = pCode, 
 #                                  startDate = AConvStart, endDate = AConvEnd
 #                                  ) %>% renameNWISColumns() %>% data.frame
 
@@ -96,7 +99,7 @@ Milner$Q_cms = Milner$Q_cms*0.028316847
 # IsoStart=as.Date("2018-06-01") 
 # IsoEnd=as.Date("2018-08-01") 
 # 
-# IsoQ = readNWISuv(siteNumbers = IsolatedPool, parameterCd = pCode, 
+# IsoQ = readNWISdv(siteNumbers = IsolatedPool, parameterCd = pCode, 
 #                    startDate = IsoStart, endDate = IsoEnd
 #                    ) %>% renameNWISColumns() %>% data.frame
 # IsoQ$Flow_Inst = IsoQ$Flow_Inst*0.028316847
@@ -127,78 +130,79 @@ Milner$Q_cms = Milner$Q_cms*0.028316847
 # PLOT FIGURE 3
 #******************************************************************************
 
-
-
+# set up plot:
 pdfOutPath = "Figure3.pdf"
-pdf(pdfOutPath, width = 7.5, height = 7.5 )
+pdf(pdfOutPath, width=4, height = 8)
 
-layout(matrix(1:6, nrow=3, byrow=T))
-par(mar=c(4,4,1,1))
-
-
-
-# a Frozen gauge location -------------------------
-D = FrozenQ$dateTime
-Q = FrozenQ$Flow_Inst
-plot(D, Q, type="n", col="blue", xlab="", ylab="Q (cms)")
-
-boxVec = rep(0, length(Q))
-boxVec[FrozenQ$Flow_Inst_cd == "A e"] = 1
-boxDif = diff(boxVec)
-boxLeft = D[boxDif == 1]
-boxRight = D[boxDif == -1]
-boxBottom = min(Q)
-boxTop = max(Q)
+layout(matrix(1:5, nrow=5, byrow=T), heights=c(3,3,3,3,3.5))
+par(mar=c(3,4,2,1))
 
 
-plot(FrozenQ$dateTime, FrozenQ$Flow_Inst, 
-     type="l", col="blue", xlab="", ylab="Q (cms)", 
-     lwd=1)
-# lines(FrozenQ$dateTime[FrozenQ$Flow_Inst <= 0.001],
-#       FrozenQ$Flow_Inst[FrozenQ$Flow_Inst <= 0.001], 
-#       lty="dotted", col='white', lwd=3)
-# axis.POSIXct(1, FrozenQ$dateTime, format="%Y", padj=1.8)
 
-rect(boxLeft, boxBottom, boxRight, boxTop)
+# a Ice -------------------------
+D = as.POSIXlt(FrozenQ$Date)
+Q = FrozenQ$X_00060_00003
+
+plot(D, Q/1e4, type="l", 
+     xlab="", ylab="Q (cms)", 
+     las=1, lwd=1.5,col="blue")
+abline(h=0, lty=1, col=rgb(1,1,1,0.8))
+abline(h=0, lty=2)
+mtext(expression(10^4), adj=0, outer=F, cex=0.65)
+axis.POSIXct(1, D, format="%Y", padj=1.8)
+legend("topleft", "a. Ice impacted", border=F, bty="n", text.font=2)
 
 # b Flow Reversal ---------------------------------
-posQ = FlowReverseQ$Flow_Inst
-negQ = FlowReverseQ$Flow_Inst
-posQind = FlowReverseQ$Flow_Inst > 0
-negQind = FlowReverseQ$Flow_Inst < 0
-
-plot(FlowReverseQ$dateTime, FlowReverseQ$Flow_Inst, type="n", col="blue", xlab="", ylab="", lwd=1)
-
-posQ[negQind] = NA
-negQ[posQind] = NA
-
-lines(FlowReverseQ$dateTime, posQ, col="blue", xlab="", ylab="", lwd=1)
-lines(FlowReverseQ$dateTime, negQ, col="light blue", xlab="", ylab="", lwd=1)
-abline(h=0)
-
-axis.POSIXct(1, FlowReverseQ$dateTime, format="%Y", padj=1.8)
-
+D = as.POSIXlt(FlowReverseQ$Date)
+Q = FlowReverseQ$X_00060_00003
+plot(D, Q, type="l", 
+     ylim=c(0, 1.5),
+     xlab="", ylab="Q (cms)", 
+     las=1, lwd=1.5, col="blue")
+abline(h=0, lty=1, col=rgb(1,1,1,0.8))
+abline(h=0, lty=2)
+mtext(expression(10^0), adj=0, outer=F, cex=0.65)
+axis.POSIXct(1, D, format="%Y", padj=1.8)
+legend("topleft", "b. Flow reversal", border=F, bty="n", text.font=2)
 
 # c Data/equipment error ---------------------------
-plot(DataErrorQ$dateTime, DataErrorQ$Flow_Inst, type="l", main="", 
-     col="blue", xlab="", ylab="Q (cms)", lwd=1)
-# lines(DataErrorQ$dateTime[DataErrorQ$Flow_Inst <= 0.001], 
-#       DataErrorQ$Flow_Inst[DataErrorQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
-axis.POSIXct(1, DataErrorQ$dateTime, format="%Y", padj=1.8)
+D = as.POSIXlt(DataErrorQ$dateTime)
+Q = DataErrorQ$Flow_Inst
+plot(D, Q/10^3, type="l", main="",
+     xlab="", ylab="Q (cms)", 
+     ylim=c(0, 1.5), #xaxt="n",
+     lwd=1.5, col="blue", las=1)
+abline(h=0, lty=1, col=rgb(1,1,1,0.8))
+abline(h=0, lty=2)
+mtext(expression(10^3), adj=0, outer=F, cex=0.65)
+#axis.POSIXct(1, D, format="%b", padj=0)
+axis.POSIXct(1, D, format="%Y", padj=1.8)
+legend("topleft", "c. Data/equipment error", border=F, bty="n", text.font=2)
 
+# d Anthro Groundwater Pumping Removes flow  ---------------------------
+D = as.POSIXlt(AnthroGWQ$Date)
+Q = AnthroGWQ$X_00060_00003
+plot(D, Q*1e2, type="l", main="" ,
+     xlab="", ylab="Q (cms)", 
+     col="blue", las=1, lwd=1.5)
+abline(h=0, lty=1, col=rgb(1,1,1,0.8))
+abline(h=0, lty=2)
+mtext(expression(10^1), adj=0, outer=F, cex=0.65)
+axis.POSIXct(1, D, format="%Y", padj=1.8)
+legend("topleft", "d. Pumping", border=F, bty="n", text.font=2)
 
-# d Anthro Groundwater Pumping Removes flow 
-plot(AnthroGWQ$dateTime, AnthroGWQ$Flow_Inst, type="l", main="" ,
-     col="blue", xlab="Date", ylab="Q (cms)", lwd=1)
-# lines(AnthroGWQ$dateTime[AnthroGWQ$Flow_Inst <= 0.001], AnthroGWQ$Flow_Inst[AnthroGWQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
-axis.POSIXct(1, AnthroGWQ$dateTime, format="%Y", padj=1.8)
-
-
-# e Anthro Upstream Surface water loss from diverting around a dam - might not need this
-plot(Milner$Timestamp..UTC.07.00., Milner$Q_cms, type="l", main="" ,
-     col="blue", xlab="Date", ylab="Q (cms)", lwd=1)
-axis.POSIXct(1, Milner$Timestamp..UTC.07.00., format="%Y", padj=1.8)
-
+# e Anthro Upstream Surface water loss from diverting around a dam
+par(mar=c(5,4,2,1))
+D = as.POSIXlt(Milner$Timestamp..UTC.07.00.)
+Q = Milner$Q_cms
+plot(D, Q, type="l", main="" ,
+     xlab="Date", ylab="Q (cms)", 
+     las=1, lwd=1.5, col="blue")
+abline(h=0, lty=1, col=rgb(1,1,1,0.8))
+abline(h=0, lty=2)
+mtext(expression(10^0), adj=0, outer=F, cex=0.65)
+axis.POSIXct(1, D, format="%Y", padj=1.8)
+legend("topleft", "e. Diversion", border=F, bty="n", text.font=2)
 
 # Naturally occuring isolated pools --------------
 # plot(IsoQ$dateTime, IsoQ$Flow_Inst, type="l", main="",
@@ -213,9 +217,10 @@ axis.POSIXct(1, Milner$Timestamp..UTC.07.00., format="%Y", padj=1.8)
 # # lines(AnthroConveyanceAQ$dateTime[AnthroConveyanceAQ$Flow_Inst <= 0.001], AnthroConveyanceAQ$Flow_Inst[AnthroConveyanceAQ$Flow_Inst <= 0.001], lty="dotted", col='white', lwd=3)
 # axis.POSIXct(1, AnthroConveyanceAQ$dateTime, format="%Y", padj=1.8)
 
+
 dev.off()
 cmd = paste('open', pdfOutPath)
 system(cmd)
 
 
-# update vertical axis
+
